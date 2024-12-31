@@ -14,7 +14,7 @@ export const keywords = [
   "الكويت اسماك",
   "سمك",
 ]
-export const urlimage = "/images/og-image.png"
+export const urlimage = "/og-image.png"
 export const imagealt = "kwr"
 export const twitterhandle = "@mom"
 
