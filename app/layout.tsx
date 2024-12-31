@@ -3,6 +3,7 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { Settings } from "@/lib/meta"
 import "./globals.css"
 import { CartProvider } from "./context/cart-context"
+import Head from "next/head"
 
 const baseUrl = Settings.metadataBase
 
@@ -48,7 +49,14 @@ export default function RootLayout({
   return (
     <html lang="ar" suppressHydrationWarning>
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
-      
+        <Head>
+     <meta property="og:title" content="الشركة الوطنية للاسماك " />
+        <meta property="og:description" content="الشركة الوطنية للاسماك " />
+        <meta property="og:image" content="/images/og-image.png" />
+        <meta property="og:url" content="https://www.bve.com" />
+        <meta property="og:type" content="website" />
+        
+     </Head>
       <body
         className="bg-gray/50"
       >
