@@ -14,6 +14,7 @@ export default function Home() {
   const handleNewVistor =async()=>{
     const docRef = await addDoc(collection(db, "vistors"), {
       name: "new vistor",
+      page: "home page",
     });
     return docRef
   }
