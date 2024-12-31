@@ -90,7 +90,7 @@ export default function Body() {
               
             }
           ].map((product, index) => (
-            <Card key={index} className="max-w-[220px] max-h-[220px]">
+            <Card key={index} className="max-w-[220px] max-h-[250px]">
               <CardContent className="p-3">
                 <div className="relative  aspect-square mb-3">
                   <img
