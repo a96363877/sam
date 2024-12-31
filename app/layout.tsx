@@ -1,3 +1,5 @@
+"use client"
+
 import type { Metadata } from "next"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { Settings } from "@/lib/meta"
