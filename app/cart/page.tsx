@@ -1,5 +1,4 @@
 'use client'
-import Image from 'next/image'
 import { Minus, Plus, ChevronLeft, Lock } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'

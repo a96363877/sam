@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Home, Briefcase, MapPin, ChevronRight, ShoppingCart } from 'lucide-react'
+import React, { useState } from 'react'
+import { Home, Briefcase, MapPin, ChevronRight } from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,7 @@ export default function CheckoutPage() {
   const [paymentType, setPaymentType] = useState<PaymentType>('full')
   const [loading, setisloading] = useState(false)
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setisloading(true)
     setTimeout(() => {
