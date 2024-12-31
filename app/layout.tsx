@@ -3,6 +3,8 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { Settings } from "@/lib/meta"
 import "./globals.css"
 import { CartProvider } from "./context/cart-context"
+import { Head } from "next/document"
+import Script from "next/script"
 
 const baseUrl = Settings.metadataBase
 
@@ -42,9 +44,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+
+  // Respond to OPTIONS method
+
   return (
     <html lang="ar" suppressHydrationWarning>
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
+      <head>
+        <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></Script>
+      </head  >
       <body
         className="bg-gray/50"
       >

