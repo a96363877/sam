@@ -3,8 +3,6 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { Settings } from "@/lib/meta"
 import "./globals.css"
 import { CartProvider } from "./context/cart-context"
-import { Head } from "next/document"
-import Script from "next/script"
 
 const baseUrl = Settings.metadataBase
 
