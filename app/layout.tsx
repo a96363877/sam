@@ -1,13 +1,7 @@
 import type { Metadata } from "next"
 import { GoogleTagManager } from "@next/third-parties/google"
-import { GeistMono } from "geist/font/mono"
-
 import { Settings } from "@/lib/meta"
-import { Footer } from "@/components/footer"
-import { ThemeProvider } from "@/components/theme-provider"
-
 import "./globals.css"
-import { Header } from "@/components/header"
 import { CartProvider } from "./context/cart-context"
 
 const baseUrl = Settings.metadataBase
@@ -52,14 +46,12 @@ export default function RootLayout({
     <html lang="ar" suppressHydrationWarning>
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
       <body
-      className="bg-gray/50"
+        className="bg-gray/50"
       >
-<CartProvider>
-      
-
+        <CartProvider>
           {children}
         </CartProvider>
-        
+
       </body>
     </html>
   )
