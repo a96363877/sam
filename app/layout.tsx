@@ -50,9 +50,6 @@ export default function RootLayout({
   return (
     <html lang="ar" suppressHydrationWarning>
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
-      <head>
-        <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></Script>
-      </head  >
       <body
         className="bg-gray/50"
       >

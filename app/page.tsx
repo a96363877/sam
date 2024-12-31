@@ -9,7 +9,7 @@ import { WarningDialog } from "@/components/warnning-dialog"
 export default function Home() {
   return (
     <div className="min-h-[86.5vh] flex flex-col justify-center items-center bg-gray-100 text-center  ">
-   <Header/>
+     <Header/>
       <SearchBar />
       <Hero />
       <Body/>
