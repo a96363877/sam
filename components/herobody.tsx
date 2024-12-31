@@ -1,6 +1,5 @@
 'use client'
-import Image from "next/image"
-import { Star, Clock, MapPin } from 'lucide-react'
+import { Star} from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { useCart } from "@/app/context/cart-context"

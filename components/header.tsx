@@ -1,6 +1,5 @@
 'use client'
 
-import Image from "next/image"
 import { ShoppingCart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/app/context/cart-context"
