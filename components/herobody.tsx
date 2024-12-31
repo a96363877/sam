@@ -68,17 +68,17 @@ export default function Body() {
       {/* Products */}
       <main className="flex-1 p-4">
         <h2 className="text-xl font-bold mb-4">عروض اليوم</h2>
-        <div className="grid grid-cols-3 gap-4 overflow">
+        <div className="grid grid-cols-3 gap-1 overflow-y-hidden	 overflow-x-auto w-full	">
           {[
             {
               id:77,
-              name: "10 كيلو روبيان كويتي جامبو طازج",
+              name: "10 كيلو روبيان كويتي  طازج",
               price: "8.000",
               image: "/images/2.png"
             },
             {
               id:88,
-              name: "كرتون 10 كيلو سيباس تركي حجم 800-1000",
+              name: "كرتون 10 كيلو سيباس تركي ",
               price: "12.000",
               image: "/images/1.png"
             },
@@ -90,9 +90,9 @@ export default function Body() {
               
             }
           ].map((product, index) => (
-            <Card key={index} className="overflow w-full">
+            <Card key={index} className="max-w-[220px] max-h-[220px]">
               <CardContent className="p-3">
-                <div className="relative w-full aspect-square mb-3">
+                <div className="relative  aspect-square mb-3">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -108,6 +108,7 @@ export default function Body() {
                 </div>
                 <Button 
                 variant={'outline'}
+                size="sm"
                  onClick={() =>
                   dispatch({
                     type: 'ADD_ITEM',
