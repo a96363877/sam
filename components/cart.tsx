@@ -2,7 +2,6 @@
 
 import { Minus, Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import { useCart } from '@/app/context/cart-context'
 import {
   Sheet,
