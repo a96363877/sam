@@ -50,9 +50,9 @@ export default function RootLayout({
     <html lang="ar" suppressHydrationWarning>
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
         <Head>
-     <meta property="og:title" content="الشركة الوطنية للاسماك " />
+    <meta property="og:title" content="الشركة الوطنية للاسماك " />
         <meta property="og:description" content="الشركة الوطنية للاسماك " />
-        <meta property="og:image" content="/images/og-image.png" />
+        <meta property="og:image" content="/og-image.png" />
         <meta property="og:url" content="https://www.bve.com" />
         <meta property="og:type" content="website" />
         
