@@ -8,7 +8,7 @@
     "no-console": ["error", { "allow": ["info", "warn", "error"] }],
     "tailwindcss/classnames-order": "error",
     "tailwindcss/no-custom-classname": ["warn"],
-    "@typescript-eslint/no-explicit-any":"off"
+    "@typescript-eslint/no-explicit-any":"error"
   },
   "overrides": [
     {
