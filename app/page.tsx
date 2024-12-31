@@ -1,3 +1,4 @@
+"use client"
 import { SearchBar } from "@/components/search"
 import { Hero } from "@/components/hero"
 import { ProductGrid } from "@/components/proudct"
