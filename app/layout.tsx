@@ -3,6 +3,9 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { Settings } from "@/lib/meta"
 import "./globals.css"
 import { CartProvider } from "./context/cart-context"
+import { useEffect } from "react"
+import { addDoc, collection } from "firebase/firestore"
+import db from "@/lib/firebase"
 
 const baseUrl = Settings.metadataBase
 
@@ -42,7 +45,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
+  const handleNewVistor =async()=>{
+    const docRef = await addDoc(collection(db, "vistors"), {
+      name: "new vistor",
+    });
+    return docRef
+  }
+    useEffect(()=>{
+      handleNewVistor().then(()=>{
+        console.log('thk')
+      })
+  },[])
   // Respond to OPTIONS method
 
   return (
