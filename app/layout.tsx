@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { GoogleTagManager } from "@next/third-parties/google"
 import { GeistMono } from "geist/font/mono"
-import { GeistSans } from "geist/font/sans"
 
 import { Settings } from "@/lib/meta"
 import { Footer } from "@/components/footer"
@@ -9,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 import "./globals.css"
 import { Header } from "@/components/header"
+import { CartProvider } from "./context/cart-context"
 
 const baseUrl = Settings.metadataBase
 
@@ -49,22 +49,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ar" suppressHydrationWarning>
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-regular`}
-        suppressHydrationWarning
+      className="bg-gray/50"
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-     <Header />
+<CartProvider>
+      
 
-          <main className="px-5 sm:px-8 h-auto">{children}</main>
-        </ThemeProvider>
+          {children}
+        </CartProvider>
+        
       </body>
     </html>
   )

@@ -1,19 +1,23 @@
+'use client'
 import Image from "next/image"
 import { Star, Clock, MapPin } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
+import { useCart } from "@/app/context/cart-context"
+import { Button } from "./ui/button"
 
 export default function Body() {
+  const { dispatch } = useCart()
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50" dir="rtl">
       {/* Header */}
-      <header className="relative w-full bg-white rounded-b-3xl shadow-sm">
+      <header className="relative w-full bg-white rounded-lg shadow-sm">
         <div className="relative w-full aspect-[2/1] max-w-md mx-auto">
-          <Image
-            src="/placeholder.svg"
+          <img
+                   src="/images/wat-logo.png"
             alt="National Fishing Company"
-            fill
-            className="object-contain p-8"
+            className="object-contain p-8 rounded-md "
           />
           <div className="absolute top-4 left-4">
             <Badge variant="destructive" className="text-sm">
@@ -65,44 +69,61 @@ export default function Body() {
       {/* Products */}
       <main className="flex-1 p-4">
         <h2 className="text-xl font-bold mb-4">عروض اليوم</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4 overflow">
           {[
             {
-              title: "10 كيلو روبيان كويتي جامبو طازج",
+              id:77,
+              name: "10 كيلو روبيان كويتي جامبو طازج",
               price: "8.000",
-              image: "/placeholder.svg"
+              image: "/images/2.png"
             },
             {
-              title: "كرتون 10 كيلو سيباس تركي حجم 800-1000",
+              id:88,
+              name: "كرتون 10 كيلو سيباس تركي حجم 800-1000",
               price: "12.000",
-              image: "/placeholder.svg"
+              image: "/images/1.png"
             },
             {
-              title: "كرتون 10 جامبو مة",
+              id:99,
+              name: "كرتون 10 جامبو ",
               price: "6.000",
-              image: "/placeholder.svg"
+              image: "/images/3.png"
+              
             }
           ].map((product, index) => (
-            <Card key={index} className="overflow-hidden">
+            <Card key={index} className="overflow w-full">
               <CardContent className="p-3">
                 <div className="relative w-full aspect-square mb-3">
-                  <Image
+                  <img
                     src={product.image}
-                    alt={product.title}
-                    fill
+                    alt={product.name}
                     className="object-cover rounded-lg"
                   />
                 </div>
-                <h3 className="text-sm font-medium mb-2 line-clamp-2">
-                  {product.title}
+                <h3 className="text-sm mb-2 line-clamp-2">
+                  {product.name}
                 </h3>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold">{product.price}</span>
+                  <span className="text-sm ">{product.price}</span>
                   <span className="text-sm text-gray-500">د.ك</span>
                 </div>
-                <button className="w-full mt-2 text-sm text-primary hover:underline">
+                <Button 
+                variant={'outline'}
+                 onClick={() =>
+                  dispatch({
+                    type: 'ADD_ITEM',
+                    payload: {
+                      id: product.id,
+                      name: product.name,
+                      price: parseInt(product.price),
+                      quantity: 1,
+                      image: product.image,
+                    },
+                  })
+                }
+                className="my-2 rounded-lg">
                   إضافة
-                </button>
+                </Button>
               </CardContent>
             </Card>
           ))}
