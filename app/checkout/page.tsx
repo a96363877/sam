@@ -11,8 +11,6 @@ import { Sheet, SheetTrigger,SheetContent,SheetHeader,SheetDescription ,SheetTit
 import { useCart } from '../context/cart-context'
 import { onSnapshot, getDoc, doc} from 'firebase/firestore'
 import database from '@/lib/firebase'
-import {addData} from './actions'
-
 import { data } from 'react-router-dom'
 
 type LocationType = 'home' | 'work' | 'client'

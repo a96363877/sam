@@ -72,7 +72,7 @@ export function ProductGrid() {
   const { dispatch } = useCart()
 
   return (
-    <div className="container mx-auto px-4 space-y-6 mb-16 pb-8" dir="rtl">
+    <div className="container mx-auto px-4 space-y-6 mb-16 pb-8 mt-6" dir="rtl">
       {products.map((product) => (
         <div
           key={product.id}

@@ -1,7 +1,7 @@
 'use client'
 import { Star} from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { useCart } from "@/app/context/cart-context"
 import { Button } from "./ui/button"
 
@@ -66,7 +66,7 @@ export default function Body() {
       </header>
 
       {/* Products */}
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-4 bg-gray-200">
         <h2 className="text-xl font-bold mb-4">عروض اليوم</h2>
         <div className="grid grid-cols-3 gap-1 overflow-y-hidden	 overflow-x-auto w-full	">
           {[
@@ -84,13 +84,13 @@ export default function Body() {
             },
             {
               id:99,
-              name: "كرتون 10 جامبو ",
+              name: "كرتون 10 كيلو روبيان جامبو ",
               price: "6.000",
               image: "/images/3.png"
               
             }
           ].map((product, index) => (
-            <Card key={index} className="max-w-[220px] max-h-[250px]">
+            <Card key={index} className="max-w-[220px] rounded-[20px]">
               <CardContent className="p-3">
                 <div className="relative  aspect-square mb-3">
                   <img
@@ -106,7 +106,11 @@ export default function Body() {
                   <span className="text-sm ">{product.price}</span>
                   <span className="text-sm text-gray-500">د.ك</span>
                 </div>
-                <Button 
+         
+              </CardContent>
+              <CardFooter className='items-center'>
+              <Button 
+              
                 variant={'outline'}
                 size="sm"
                  onClick={() =>
@@ -121,10 +125,10 @@ export default function Body() {
                     },
                   })
                 }
-                className="my-2 rounded-lg">
+                className="my-2 rounded-lg w-full">
                   إضافة
                 </Button>
-              </CardContent>
+              </CardFooter>
             </Card>
           ))}
         </div>

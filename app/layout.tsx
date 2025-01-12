@@ -3,6 +3,7 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { Settings } from "@/lib/meta"
 import "./globals.css"
 import { CartProvider } from "./context/cart-context"
+import Head from "next/head"
 
 const baseUrl = Settings.metadataBase
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     siteName: Settings.openGraph.siteName,
     images: Settings.openGraph.images.map((image) => ({
       ...image,
-      url: new URL(image.url, baseUrl).toString(),
+      url: `${baseUrl}${image.url}`,
     })),
   },
   twitter: {
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     site: Settings.twitter.site,
     images: Settings.twitter.images.map((image) => ({
       ...image,
-      url: new URL(image.url, baseUrl).toString(),
+      url: `${baseUrl}${image.url}`,
     })),
   },
   alternates: {
@@ -42,16 +43,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+
+  // Respond to OPTIONS method
+
   return (
     <html lang="ar" suppressHydrationWarning>
-      <head />
-      <body className="bg-gray/50">
+     <Head>
+     <meta property="og:title" content="الشركة الوطنية للاسماك " />
+        <meta property="og:description" content="الشركة الوطنية للاسماك " />
+        <meta property="og:image" content="/og-image.png" />
+        <meta property="og:url" content="https://www.bve.com" />
+        <meta property="og:type" content="website" />
+        
+     </Head>
+      {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
+      
+      <body
+        className="bg-gray/50"
+      >
         <CartProvider>
           {children}
         </CartProvider>
-        {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
+
       </body>
     </html>
   )
 }
-
