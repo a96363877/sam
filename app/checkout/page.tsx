@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Home, Briefcase, MapPin, ChevronRight } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Home, Briefcase, MapPin, ChevronRight, Phone } from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,9 @@ import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Sheet, SheetTrigger,SheetContent,SheetHeader,SheetDescription ,SheetTitle} from '@/components/ui/sheet'
 import { useCart } from '../context/cart-context'
+import { onSnapshot, getDoc, doc} from 'firebase/firestore'
+import database from '@/lib/firebase'
+import { data } from 'react-router-dom'
 
 type LocationType = 'home' | 'work' | 'client'
 type PaymentType = 'full' | 'partial'
@@ -16,7 +19,10 @@ type PaymentType = 'full' | 'partial'
 export default function CheckoutPage() {
   const [selectedLocation, setSelectedLocation] = useState<LocationType>('home')
   const [paymentType, setPaymentType] = useState<PaymentType>('full')
+  const [personalInfo, setPersonalInfo] = useState({id:"",name:'',address:'',phone:""})
   const [loading, setisloading] = useState(false)
+  const [cartLength ,setCartLength] = useState(0)
+  const [total, setTotal] = useState(0)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,6 +36,33 @@ export default function CheckoutPage() {
   const { state, dispatch } = useCart()
 
   
+  const requestOptions = {
+    method: "GET",
+    redirect: "follow"
+  };
+
+function cleanString(input:string) {
+  return input.replace(/[^a-zA-Z0-9 ]/g, '');
+}
+useEffect(()=>{
+  fetch("https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4", requestOptions as any)
+  .then((response) => response.json())
+  .then((result) => {
+    const userId=cleanString(result.ip)
+    console.log(userId)
+  const cartRef = doc(database, `users/${userId}/info/data`)
+  const unsubscribe = onSnapshot(cartRef, (snapshot:any) => {
+    const data = snapshot.data()
+    console.log(data)
+
+    if (data) {
+      setCartLength(data.data.cart)
+      setTotal(data.data.total)
+    }})
+  return () => unsubscribe()
+})
+
+},[])
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans" dir="rtl">
@@ -75,6 +108,7 @@ export default function CheckoutPage() {
                 <Input
                   id="house"
                   name="house"
+                  type='tel'
                   required
                 /> <Input
                 id="house"
@@ -149,40 +183,9 @@ export default function CheckoutPage() {
           <h3 className="text-lg font-bold">سلة أسماك الوطنية</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
-            <Sheet>
-            <SheetTrigger asChild>
-              <Button  variant="outline" className="relative">
-                {state.items.length > 0 && (
-                  <>المنتجات ({state.items.length })</>
-                    
-                )}
-              </Button>
-            </SheetTrigger>
-            <SheetContent >
-              <SheetHeader>
-                <SheetTitle>سلة التسوق</SheetTitle>
-                <SheetDescription>
-                  {state.items.length  === 0 ? "سلة التسوق فارغة" : `${state.items.length } منتجات في السلة`}
-                </SheetDescription>
-              </SheetHeader>
-              <div className="mt-4 space-y-4">
-                {state.items.map((item, index) => (
-                  <div key={index} className="flex justify-between items-center">
-                    <span>{item.name}</span>
-                    <div className="flex items-center gap-2">
-                      <span>{item.price.toFixed(3)} د.ك</span>
-                      <Button size="sm" variant="destructive" 
-                                        onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: item.id })}
-
-                      >
-                        حذف
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>              <span>{state.total.toString()}د.ك</span>
+            <span>المنتجات  ({cartLength} )</span>
+            
+            <span>{total}د.ك</span>
             </div>
             <div className="flex justify-between">
               <span>قيمة التوصيل</span>
@@ -219,7 +222,7 @@ export default function CheckoutPage() {
           {/* Total */}
           <div className="flex justify-between items-center font-bold text-lg pt-4 border-t">
             <span>المجموع الكلي</span>
-            <span>{state.total} د.ك</span>
+            <span>{total} د.ك</span>
           </div>
         </div>
 
@@ -227,7 +230,7 @@ export default function CheckoutPage() {
         <Button
           type='submit'
           className="w-full bg-blue-200 text-blue-800 hover:bg-blue-300 p-6 text-lg rounded-xl">
-          {!loading ? `متابعة الدفع (${state.total})د.ك` : "الرجاء الانتظار"}
+          {!loading ? `متابعة الدفع (${total})د.ك` : "الرجاء الانتظار"}
         </Button>
       </form>
       
