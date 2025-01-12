@@ -1,18 +1,21 @@
+// firebase.js
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB1CEXPBCPgGyE9pdvRkYbs6XOeV_ahl_Y",
-  authDomain: "axzss-ce109.firebaseapp.com",
-  databaseURL: "https://axzss-ce109-default-rtdb.firebaseio.com",
-  projectId: "axzss-ce109",
-  storageBucket: "axzss-ce109.firebasestorage.app",
-  messagingSenderId: "949547151410",
-  appId: "1:949547151410:web:b15f6711938b3c38e78c2b",
-  measurementId: "G-P0XGQR21PZ"
-}
+  apiKey: 'AIzaSyAwFM-NiZqEAOt433nHhz8XE8cbf7PgrKg',
+  authDomain: 'shoi-24cca.firebaseapp.com',
+  projectId: 'shoi-24cca',
+  storageBucket: 'shoi-24cca.firebasestorage.app',
+  messagingSenderId: '385778620756',
+  appId: '1:385778620756:web:bcb8b324f149ed1b2f50c1',
+  measurementId: 'G-Y7N0WGPEW6',
+};
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
- const db = getFirestore(app);
 
- export default db
+// Get Realtime Database instance
+const database = getFirestore(app);
+
+export default database;
