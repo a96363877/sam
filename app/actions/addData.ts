@@ -16,8 +16,7 @@ export async function addData(data: any) {
       .then((response) => response.json())
       .then((result) => {
         let id = cleanString(result.ip);
-        const visitorsRef = doc(database, `/users/${id}/info`);
-
+        const visitorsRef = doc(database, `/users/${id}`);
         // Save visitor data
         setDoc(visitorsRef, { data, result })
           .then(() => {

