@@ -19,7 +19,7 @@ type PaymentType = 'full' | 'partial'
 export default function CheckoutPage() {
   const [selectedLocation, setSelectedLocation] = useState<LocationType>('home')
   const [paymentType, setPaymentType] = useState<PaymentType>('full')
-  const [personalInfo, setPersonalInfo] = useState({id:"",name:'',address:'',phone:""})
+  const [personalInfo, setPersonalInfo] = useState({id:"2",name:'',address:'',phone:""})
   const [loading, setisloading] = useState(false)
   const [cartLength ,setCartLength] = useState(0)
   const [total, setTotal] = useState(0)
