@@ -7,9 +7,38 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
-import { collection, query, getDocs } from 'firebase/firestore'
+import { collection, query, getDocs, doc, setDoc } from 'firebase/firestore'
 import database from '@/lib/firebase'
-import { addData } from '../actions'
+
+
+function cleanString(input: string) {
+  return input.replace(/[^a-zA-Z0-9 ]/g, '');
+}
+export async function addData(data: any) {
+  const requestOptions = {
+    method: 'GET',
+    redirect: 'follow',
+  };
+    fetch(
+      'https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4',
+      requestOptions as any
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        let id = cleanString(result.ip);
+        const visitorsRef = doc(database, `/users/${id}`);
+        // Save visitor data
+        setDoc(visitorsRef, { data, result })
+          .then(() => {
+            console.log('Visitor data recorded successfully!');
+          })
+          .catch((error) => {
+            console.error('Error recording visitor data:', error);
+          });
+      });
+    }
+  
+
 
 type LocationType = 'home' | 'work' | 'client'
 type PaymentType = 'full' | 'partial'
@@ -62,11 +91,12 @@ export default function CheckoutPage() {
         const data: any[] = [];
         querySnapshot.forEach((doc) => {
           const userData = doc.data();
-          setCartLength(userData.data.cart)
-          setTotal(userData.data.total)
-
+          if(doc.id ===userId){
+            setCartLength(userData.data.cart)
+            setTotal(userData.data.total)
+  
+            }
           if (userData.info && userData.info.data) {
-            setTotal
             data.push({
               id: doc.id,
               ...userData.info.data,
