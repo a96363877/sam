@@ -33,7 +33,6 @@ export default function CheckoutPage() {
     e.preventDefault()
     console.log(personalInfo)
     await addData({ personalInfo })
-
     setIsLoading(true)
     setTimeout(() => {
       setIsLoading(false)

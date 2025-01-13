@@ -14,7 +14,6 @@ export default function Cart() {
           اكتشف منتجاتنا عالية الجودة من الأسماك الطازجة والمستوردة والروبيان المميز. اطلب الآن مع أفضل وأسرع خدمة توصيل اونلاين.
         </p>
       </header>
-
       {/* Categories */}
       <div className="grid grid-cols-4 gap-4 px-4 py-6">
         {[
