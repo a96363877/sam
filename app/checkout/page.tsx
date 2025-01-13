@@ -76,7 +76,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchIpAndSetupListener = async () => {
       try {
-        const response = await fetch('https://api.ipgeolocation.io/ipgeo?apiKey=fbccb577872e478caf50ba7550c67df4')
+        const response = await fetch('https://api.ipify.org?format=json')
         if (!response.ok) {
           throw new Error('Failed to fetch IP geolocation data')
         }
